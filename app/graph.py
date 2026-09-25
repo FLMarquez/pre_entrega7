@@ -56,15 +56,22 @@ class AgentState(TypedDict, total=False):
 
 def get_llm():
     provider = os.getenv("MODEL_PROVIDER", "anthropic").lower()
-    model_name = os.getenv("MODEL_NAME", "claude-sonnet-5")
+
+    if provider in ("gemini", "google"):
+        from app.llm_provider import get_gemini_llm
+
+        model_name = os.getenv("MODEL_NAME", "gemini-2.0-flash")
+        return get_gemini_llm(model_name)
 
     if provider == "openai":
         from langchain_openai import ChatOpenAI
 
+        model_name = os.getenv("MODEL_NAME", "gpt-4o-mini")
         return ChatOpenAI(model=model_name, temperature=0)
 
     from langchain_anthropic import ChatAnthropic
 
+    model_name = os.getenv("MODEL_NAME", "claude-sonnet-5")
     return ChatAnthropic(model=model_name, temperature=0)
 
 

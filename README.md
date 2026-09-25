@@ -56,7 +56,8 @@ screenshots/             # capturas del dashboard de observabilidad
 - Redis con módulos RedisJSON + RediSearch (Redis Stack) o Redis ≥ 8 —
   **un Redis "vanilla" (`redis:alpine`) no alcanza**, porque el checkpointer
   `langgraph-checkpoint-redis` los necesita para indexar checkpoints.
-- Una API key de Anthropic (o OpenAI) para las llamadas de los agentes.
+- Una o más API keys de Gemini (o, alternativamente, de Anthropic u OpenAI) para
+  las llamadas de los agentes.
 - Cuenta de [LangSmith](https://smith.langchain.com) **o** Docker para correr
   [Arize Phoenix](https://arize.com/docs/phoenix) localmente.
 - Docker + Docker Compose (opcional, pero recomendado).
@@ -72,6 +73,19 @@ pip install -r requirements.txt
 cp .env.example .env
 # completar .env con tus API keys
 ```
+
+### Proveedor de LLM y rotación de API keys
+
+Por defecto `MODEL_PROVIDER=gemini`. Podés cargar una sola key (`GEMINI_API_KEY`)
+o varias (`GEMINI_API_KEY`, `GEMINI_API_KEY_1`, `GEMINI_API_KEY_2`, ...): si una
+se queda sin cuota, da rate-limit (429) o quedó inválida, la app rota
+automáticamente a la siguiente key del pool antes de fallar el nodo — ver
+[app/llm_provider.py](app/llm_provider.py). También se puede usar
+`MODEL_PROVIDER=anthropic` u `openai` (una sola key cada uno).
+
+> **Seguridad:** las API keys van *solo* en tu `.env` local (ya está en
+> `.gitignore`, nunca se commitea). `.env.example` únicamente documenta qué
+> variables existen, siempre vacías — nunca pongas ahí un valor real.
 
 ## 1. Levantar Redis
 

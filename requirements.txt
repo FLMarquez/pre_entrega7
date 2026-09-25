@@ -12,6 +12,7 @@ langchain>=0.3
 langchain-core>=0.3
 langchain-anthropic>=0.3
 langchain-openai>=0.2
+langchain-google-genai>=2.0
 langsmith>=0.1.130
 
 arize-phoenix-otel>=0.6
